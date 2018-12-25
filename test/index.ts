@@ -1,5 +1,5 @@
 import { test, assertEqual } from "https://deno.land/x/testing/testing.ts";
-import * as $ from "../index.ts"
+import * as $ from "../index.ts";
 
 // describe('token()', function() {
 //   it('should succeed parsing', function() {
@@ -10,11 +10,11 @@ import * as $ from "../index.ts"
 //   });
 // });
 
-test(function token(){
-  var parse = $.token('hoge');
-  assertEqual(parse('hoge', 0), [true, 'hoge', 4])
-  assertEqual(parse('fuga', 0), [false, null, 0])
-})
+test(function token() {
+  var parse = $.token("hoge");
+  assertEqual(parse("hoge", 0), [true, "hoge", 4]);
+  assertEqual(parse("fuga", 0), [false, null, 0]);
+});
 
 // describe('choice()', function() {
 //   it('should succeed parsing', function() {
@@ -26,14 +26,12 @@ test(function token(){
 //   });
 // });
 
-test(function choice(){
-  var parse = $.choice($.token('hoge'), $.token('fuga'));
-  assertEqual(parse('hoge', 0), [true, 'hoge', 4])
-  assertEqual(parse('fuga', 0), [true, 'fuga', 4])
-  assertEqual(parse('piyo', 0), [false, null, 0])
-})
-
-//TODO
+test(function choice() {
+  var parse = $.choice($.token("hoge"), $.token("fuga"));
+  assertEqual(parse("hoge", 0), [true, "hoge", 4]);
+  assertEqual(parse("fuga", 0), [true, "fuga", 4]);
+  assertEqual(parse("piyo", 0), [false, null, 0]);
+});
 
 // describe('many()', function() {
 //   it('should succeed parsing', function() {
@@ -45,6 +43,13 @@ test(function choice(){
 //   });
 // });
 
+test(function many() {
+  var parse = $.many($.token("ab"));
+  assertEqual(parse("", 0), [true, [], 0]);
+  assertEqual(parse("ab", 0), [true, ["ab"], 2]);
+  assertEqual(parse("abab", 0), [true, ["ab", "ab"], 4]);
+});
+
 // describe('seq()', function() {
 //   it('should succeed parsing', function() {
 //     var parse = $.seq($.token('ab'), $.token('cd'), $.token('ef'));
@@ -52,6 +57,13 @@ test(function choice(){
 //     expect(parse('abcdef', 0)).is.eql([true, ['ab', 'cd', 'ef'], 6]);
 //   });
 // });
+
+test(function seq() {
+  var parse = $.seq($.token("ab"), $.token("cd"), $.token("ef"));
+  assertEqual(parse("abcdef", 0), [true, ["ab", "cd", "ef"], 6]);
+});
+
+//TODO
 
 // describe('regex()', function() {
 //   it('should succeed parsing', function() {
@@ -116,4 +128,3 @@ test(function choice(){
 //     expect(parse('a', 0)).is.eql([true, 'a', 1]);
 //   });
 // });
-
