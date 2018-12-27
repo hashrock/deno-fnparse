@@ -1,13 +1,22 @@
+type Atom = string;
+interface NestedArray extends Array<NestedArray | Atom> {}
+type AtomOrArray = Atom | NestedArray;
+type Result = [boolean, AtomOrArray, number];
+type Parser = (
+  target: string,
+  position: number
+) => [boolean, AtomOrArray, number];
+
 /**
  * 単純な文字列のパーサを生成する
  *
  * @param {String} str
  * @return {Function} parser function
  */
-export function token(str: string) {
+export function token(str: string): Parser {
   let len = str.length;
 
-  return function(target, position) {
+  return function(target: string, position: number): Result {
     if (target.substr(position, len) === str) {
       return [true, str, position + len];
     } else {
@@ -23,8 +32,8 @@ export function token(str: string) {
  * @param {Function} parser
  * @return {Function}
  */
-export function many(parser) {
-  return function(target, position) {
+export function many(parser: Parser): Parser {
+  return function(target: string, position: number): Result {
     let result = [];
 
     for (;;) {
@@ -46,8 +55,8 @@ export function many(parser) {
  * @param {Array} parsers... パーサの配列
  * @return {Function}
  */
-export function choice(...parsers) {
-  return function(target, position) {
+export function choice(...parsers: Parser[]): Parser {
+  return function(target: string, position: number): Result {
     for (let i = 0; i < parsers.length; i++) {
       let parsed = parsers[i](target, position);
       // パース成功したら結果をそのまま帰す
@@ -64,8 +73,8 @@ export function choice(...parsers) {
  * @param {Array} parsers... 結合するパーサの配列
  * @return {Function} パーサ
  */
-export function seq(...parsers) {
-  return function(target, position) {
+export function seq(...parsers: Parser[]): Parser {
+  return function(target: string, position: number): Result {
     let result = [];
     for (let i = 0; i < parsers.length; i++) {
       let parsed = parsers[i](target, position);
@@ -88,13 +97,13 @@ export function seq(...parsers) {
  * @param {RegExp} regexp
  * @return {Function}
  */
-export function regex(regexp: RegExp) {
+export function regex(regexp: RegExp): Parser {
   regexp = new RegExp(
     "^(?:" + regexp.source + ")",
     regexp.ignoreCase ? "i" : ""
   );
 
-  return function(target, position) {
+  return function(target: string, position: number): Result {
     regexp.lastIndex = 0;
     let regexResult = regexp.exec(target.slice(position));
 
@@ -112,7 +121,7 @@ export function regex(regexp: RegExp) {
  * @param {Boolean} [inverse]
  * @return {Function}
  */
-export function char(str: string, inverse?: boolean) {
+export function char(str: string, inverse?: boolean): Parser {
   if (arguments.length < 2) {
     inverse = false;
   }
@@ -122,7 +131,7 @@ export function char(str: string, inverse?: boolean) {
     dict[str[i]] = str[i];
   }
 
-  return function(target, position) {
+  return function(target: string, position: number): Result {
     let char = target.substr(position, 1);
     let isMatch = !!dict[char];
     if (inverse ? !isMatch : isMatch) {
@@ -137,9 +146,9 @@ export function char(str: string, inverse?: boolean) {
  * @param {Function} fn
  * @return {Function}
  */
-export function lazy(fn) {
+export function lazy(fn: () => Parser): Parser {
   let parser = null;
-  return function(target, position) {
+  return function(target: string, position: number): Result {
     if (!parser) {
       parser = fn();
     }
@@ -152,8 +161,8 @@ export function lazy(fn) {
  * @param {Function} parser
  * @return {Function}
  */
-export function option(parser) {
-  return function(target, position) {
+export function option(parser: Parser): Parser {
+  return function(target: string, position: number): Result {
     let result = parser(target, position);
     if (result[0]) {
       return result;
@@ -168,8 +177,8 @@ export function option(parser) {
  * @param {Function} fn
  * @return {Function}
  */
-export function map(parser, fn) {
-  return function(target, position) {
+export function map(parser: Parser, fn: (string) => string): Parser {
+  return function(target: string, position: number): Result {
     let result = parser(target, position);
     if (result[0]) {
       return [result[0], fn(result[1]), result[2]];
@@ -184,8 +193,8 @@ export function map(parser, fn) {
  * @param {Function} fn
  * @return {Function}
  */
-export function filter(parser, fn) {
-  return function(target, position) {
+export function filter(parser: Parser, fn: (string) => boolean) {
+  return function(target: string, position: number): Result {
     const result = parser(target, position);
     if (result[0]) {
       return [fn(result[1]), result[1], result[2]];
