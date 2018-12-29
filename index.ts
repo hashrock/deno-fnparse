@@ -177,7 +177,7 @@ export function option(parser: Parser): Parser {
  * @param {Function} fn
  * @return {Function}
  */
-export function map(parser: Parser, fn: (string) => string): Parser {
+export function map(parser: Parser, fn: (NestedArray) => NestedArray): Parser {
   return function(target: string, position: number): Result {
     let result = parser(target, position);
     if (result[0]) {
