@@ -177,7 +177,7 @@ export function option(parser: Parser): Parser {
  * @param {Function} fn
  * @return {Function}
  */
-export function map(parser: Parser, fn: (NestedArray) => NestedArray): Parser {
+export function map(parser: Parser, fn: (AtomOrArray) => AtomOrArray): Parser {
   return function(target: string, position: number): Result {
     let result = parser(target, position);
     if (result[0]) {
@@ -201,5 +201,32 @@ export function filter(parser: Parser, fn: (string) => boolean) {
     } else {
       return result;
     }
+  };
+}
+
+export function sepBy(parser: Parser, delimiter: Parser): Parser {
+  //パーサで区切ったものを配列で返すパーサを生成
+  return function(target: string, position: number): Result {
+    let result = [];
+
+    for (;;) {
+      let parsed = parser(target, position);
+      // 受け取ったパーサが成功したら
+      if (parsed[0]) {
+        result.push(parsed[1]); // 結果を格納して
+        position = parsed[2]; // 読み取り位置を更新する
+      } else {
+        break;
+      }
+
+      let delimiterParsed = delimiter(target, position);
+      if (delimiterParsed[0]) {
+        position = delimiterParsed[2]; // 読み取り位置を更新する
+      } else {
+        break;
+      }
+    }
+
+    return [true, result, position];
   };
 }
