@@ -4,19 +4,13 @@ A port of [fnparse.js](https://github.com/anatoo/fnparse.js) to TypeScript for D
 
 An extremely simple parser combinator for JavaScript.
 
-# Usage
-
-```
-//TODO
-```
-
 # CSV Parser
 
 - Based on RFC4180.
 - Multiline and escape support.
 
 ```typescript
-//TODO
+import { parseCsv } from "https://denopkg.com/hashrock/deno-fnparse/parsers/csv.ts";
 
 parseCsv("test,123,456");
 // -> [["test", "123", "456"]]
