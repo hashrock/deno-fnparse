@@ -1,10 +1,25 @@
-// const input = `test,123,345`;
+import { test, assertEqual } from "https://deno.land/x/testing/testing.ts";
+import { parseCsv } from "./csv.ts";
 
-// const result = record(input, 0);
-// console.log(result);
+test(function basic() {
+  const input = `test,123,456`;
+  const result = [["test", "123", "456"]];
+  assertEqual(parseCsv(input), result);
+});
 
-// const multiline = `test,123,345
-// a,b,c`;
+test(function multiline() {
+  const input = `a,b,c
+d,e,f
+g,h,i`;
+  const result = [["a", "b", "c"], ["d", "e", "f"], ["g", "h", "i"]];
+  assertEqual(parseCsv(input), result);
+});
 
-// const multilineResult = file(multiline, 0);
-// console.log(JSON.stringify(multilineResult));
+test(function multilineEscaped() {
+  const input = `a,"b
+bb",c
+d,"e""""",f
+g,h,i`;
+  const result = [["a", "b\nbb", "c"], ["d", 'e""', "f"], ["g", "h", "i"]];
+  assertEqual(parseCsv(input), result);
+});
