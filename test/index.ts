@@ -73,3 +73,11 @@ test(function char() {
   assertEqual(parse("o", 0), [false, null, 0]);
   assertEqual(parse("a", 0), [true, "a", 1]);
 });
+
+test(function sepBy() {
+  var parse = $.sepBy($.token("hoge"), $.token(","));
+
+  assertEqual(parse("hoge,hoge", 0), [true, ["hoge", "hoge"], 9]);
+  assertEqual(parse("hoge,hoge,hoge", 0), [true, ["hoge", "hoge", "hoge"], 14]);
+  assertEqual(parse("hoge", 0), [true, ["hoge"], 4]);
+});
