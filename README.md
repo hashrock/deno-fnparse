@@ -1,5 +1,7 @@
 # deno-fnparse
 
+[![Build Status](https://travis-ci.org/hashrock/deno-fnparse.svg?branch=master)](https://travis-ci.org/hashrock/deno-fnparse)
+
 A port of [fnparse.js](https://github.com/anatoo/fnparse.js) to TypeScript for Deno.
 
 An extremely simple parser combinator for JavaScript.
