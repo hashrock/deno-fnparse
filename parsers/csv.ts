@@ -1,4 +1,4 @@
-import * as $ from "../index.ts";
+import * as $ from "../mod.ts";
 
 const comma = $.token(",");
 const dquote = $.token('"');

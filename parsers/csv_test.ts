@@ -1,4 +1,4 @@
-import { test, assertEqual } from "https://deno.land/x/testing/testing.ts";
+import { test, assertEqual } from "https://deno.land/x/testing/mod.ts";
 import { parseCsv } from "./csv.ts";
 
 test(function basic() {

@@ -1,5 +1,5 @@
-import { test, assertEqual } from "https://deno.land/x/testing/testing.ts";
-import * as $ from "../index.ts";
+import { test, assertEqual } from "https://deno.land/x/testing/mod.ts";
+import * as $ from "../mod.ts";
 
 test(function token() {
   var parse = $.token("hoge");

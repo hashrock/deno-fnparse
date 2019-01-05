@@ -1,4 +1,4 @@
-import * as $ from "../index.ts";
+import * as $ from "../mod.ts";
 
 var numbers = $.regex(/[0-9]+/);
 var minus = $.char("-");
